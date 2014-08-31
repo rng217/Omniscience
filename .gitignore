@@ -53,3 +53,7 @@ coverage.xml
 docs/_build/
 
 old
+/data_zip.cmd
+/data.p
+/data.zip
+/data_dropbox.cmd
