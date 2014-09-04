@@ -6,8 +6,9 @@ data=pickle.load(zipfile.ZipFile("data.zip").open("data.p"))
 
 orders={"AP":"<", "CM":"{}{}<>><{}{}><><}{><", "CD":"{}{}{}<>><<>><<>", "RD":"<>><<>><<>"}
 modeSearchDepths={"CM":3,"RD":4,"CD":4}
-switchsides_trans = '\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !"#$%&\'()*+,-./0123456789:;>=<?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz}|{~\x7f\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f\xa0\xa1\xa2\xa3\xa4\xa5\xa6\xa7\xa8\xa9\xaa\xab\xac\xad\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba\xbb\xbc\xbd\xbe\xbf\xc0\xc1\xc2\xc3\xc4\xc5\xc6\xc7\xc8\xc9\xca\xcb\xcc\xcd\xce\xcf\xd0\xd1\xd2\xd3\xd4\xd5\xd6\xd7\xd8\xd9\xda\xdb\xdc\xdd\xde\xdf\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff'
-#switchsides_trans = string.maketrans("{}<>","}{><")
+
+import string
+switchsides_trans = string.maketrans("{}<>","}{><")
 
 heroRange=range(23)+range(24,104)+range(105,107)+range(108,110)
 cmHeroRange=range(23)+range(24,60)+range(61,104)+[105]
@@ -142,7 +143,7 @@ heroGroupTable=[[6, 17, 18, 22, 37, 48, 50, 56, 58, 72, 77, 82, 90, 95, 97, 98, 
                 [4, 12, 16, 20, 21, 24, 26, 33, 52, 57, 63, 65, 74, 83, 85, 86, 89, 100],
                 [2, 30, 25, 29, 32, 35, 36, 38, 42, 44, 49, 51, 54, 64, 67, 73, 75, 78, 91]]
 
-heroTypes={
+heroTypes={ #unused and out of date
 "lane support":
 ["Crystal Maiden","Dazzle","Earthshaker","Io","Jakiro","Lich","Lion","Omniknight",
 "Treant Protector","Vengeful Spirit","Warlock"],

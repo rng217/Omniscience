@@ -43,10 +43,11 @@ def screenshot_CD():
     rescale=float(screenshot.size[0])/1920
     for group in range(6):
         for heroNumberWithinGroup in range(len(heroGroupTable[group])):
+            if heroGroupTable[group][heroNumberWithinGroup] not in cmHeroRange: continue #phoenix is a black box and is messing up detection
             blockX,blockY=[(292,267),(630,267),(292,526),(630,526),(292,786),(630,786)][group]
             stats=ImageStat.Stat(screenshot.crop((int((blockX+81*(heroNumberWithinGroup%4)+2)*rescale), int((blockY+46*(heroNumberWithinGroup/4)+2)*rescale),\
                                                       int((blockX+81*(heroNumberWithinGroup%4)+78-2)*rescale), int((blockY+46*(heroNumberWithinGroup/4)+44-2)*rescale))))
-            if max(stats.mean)>20:
+            if max(stats.mean)>20.5: #puck is brightest at 20.15
                 pool.append(heroGroupTable[group][heroNumberWithinGroup])
     return pool
 

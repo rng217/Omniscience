@@ -58,7 +58,10 @@ def about(*args):
     "A screenshot can be analyzed to figure out the available hero pool in the Captain's Draft or Random Draft modes. Simply make sure the Omniscience window is not covering any of the hero boxes (suggested locations are the bottom of the screen or on a second monitor) and press the Analyze Screenshot button. Make sure your game is set to Borderless Window in video options to avoid having the game minimize while you do this. In Random Draft you must first press Grid View on the right and then check the Show All Heroes checkbox at the top. Only the default hero grid and 16:9 widescreen resolutions are supported.\n\n"+\
     "Remember that while the Omniscience can take into account the relationships among the heroes in play, the pool available, and the winrate and popularity of the heroes, it does not account for team/lane composition or what heroes each person is good at playing. These factors are at least as important as the hero picks themselves, so you must still use your judgement when picking.\n\n"+\
     "Copyright 2014 Daniel Wilson")
-    Button(about,text="Get newest data file",command=lambda:webbrowser.open("https://dl.dropboxusercontent.com/u/16143985/data.zip")).pack()
+    version_frame = Frame(about)
+    version_frame.pack(fill=X)
+    Label(version_frame,text="Version 1.00").pack(side=LEFT)
+    Button(version_frame,text="Check web page for updates",command=lambda:webbrowser.open("https://dl.dropboxusercontent.com/u/16143985/data.zip")).pack(side=RIGHT)
 
 Button(radioFrame,text="About",command=about).pack(side=RIGHT)
 
@@ -160,7 +163,7 @@ def refresh(firstChar):
     for i in range(len(order)):
         normalized=int((heroQuality[order[i]]-heroQuality[order[-1]])*2*width/rankrange-width)
         pickText.insert(END,"{:<3} {:<20} {}\n".format(\
-            i,\
+            i+1,\
             heroes[order[i]],\
             "="*normalized+" "*min(width-normalized,width+normalized)+"="*-normalized))
 
