@@ -1,5 +1,3 @@
-# Copyright 2014 Daniel Wilson
-
 from OmniscienceTables import *
 import difflib
 

@@ -1,5 +1,3 @@
-#updated 12/16/2013
-
 import urllib2
 import string
 import cPickle as pickle
@@ -11,7 +9,7 @@ import copy
 alpha = 10000.
 
 data={
-    'next_seq': 730024264,
+    'next_seq': 783590653,
     'ranked':{
         'synergy':[], 'advantage':[], 'synergydivisor':[], 'advantagedivisor':[],
         'AP':{'popularity':[0.]*110, 'popularitydivisor':0},
@@ -41,14 +39,11 @@ except:
 apiurl='http://api.steampowered.com/IDOTA2Match_570/GetMatchHistoryBySequenceNum/v1?key=9785860340D0EF5C9D95549544F7E599&matches_requested=100&start_at_match_seq_num='
 page=None
 stop=False
-last_match_start_time=0
-
+last_match_start_time=9999999999
 radiant=range(5)
 dire=range(5,10)
-
 while not stop:
-    if last_match_start_time+86400 < time.time(): #one day
-        data['next_seq']+=100000
+    start_get_time=time.clock()
     while not stop:
         print "Downloading "+str(data['next_seq'])+": "+time.strftime('%x %I:%M:%S %p',time.localtime(last_match_start_time))
         try:
@@ -133,7 +128,8 @@ while not stop:
     except:
         print "Error while reading: "+str(sys.exc_info()[0])
         data=backup
-    stop=msvcrt.kbhit() or data['next_seq']==backup['next_seq']
+    time.sleep(max(0,.8 + start_get_time - time.clock()))
+    stop=msvcrt.kbhit()
 
 pickle.dump(data,open("data.p","wb"))
 

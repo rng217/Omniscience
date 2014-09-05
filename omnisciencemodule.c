@@ -1,9 +1,7 @@
-// © 2013 Daniel Wilson
-
 #include <Python.h>
 #include <stdlib.h>
 
-#define nHeroes 107
+#define nHeroes 108
 double synergy[nHeroes][nHeroes];
 double advantage[nHeroes][nHeroes];
 double popularity[nHeroes];

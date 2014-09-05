@@ -1,6 +1,3 @@
-# Copyright 2014 Daniel Wilson
-#updated 7/27/2014
-
 from OmniscienceMethods import *
 import difflib
 from Tkinter import *

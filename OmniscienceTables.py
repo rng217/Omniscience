@@ -1,5 +1,3 @@
-# Copyright 2014 Daniel Wilson
-
 import zipfile
 import cPickle as pickle
 data=pickle.load(zipfile.ZipFile("data.zip").open("data.p"))
@@ -10,7 +8,7 @@ modeSearchDepths={"CM":3,"RD":4,"CD":4}
 import string
 switchsides_trans = string.maketrans("{}<>","}{><")
 
-heroRange=range(23)+range(24,104)+range(105,107)+range(108,110)
+heroRange=range(23)+range(24,107)+range(108,110)
 cmHeroRange=range(23)+range(24,60)+range(61,104)+[105]
 
 heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","Earthshaker","Juggernaut","Mirana",
@@ -134,7 +132,8 @@ abbreviations={
 'kaolin':107,'earth':107,'earth spirit':107,
 'tresdin':104,'lc':104,'legion':104,'commander':104,'legion commander':104,
 'tb':109,'terrorblade':109,'terror':109,
-'phoenix':110}
+'phoenix':110,
+'techies':105,'goblin':105,'tech':105}
 
 heroGroupTable=[[6, 17, 18, 22, 37, 48, 50, 56, 58, 72, 77, 82, 90, 95, 97, 98, 99, 102, 103, 106, 109],
                 [1, 13, 15, 27, 28, 41, 53, 59, 68, 70, 76, 80, 84, 96, 101],
