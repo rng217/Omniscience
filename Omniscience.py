@@ -2,6 +2,7 @@ from OmniscienceMethods import *
 import difflib
 from Tkinter import *
 import omnisciencemodule
+import webbrowser
 
 masterPool=[]
 root = Tk()
@@ -40,8 +41,6 @@ def screenshot(*args):
 screenshotButton=Button(radioFrame,text="Analyze Screenshot",command=screenshot)
 screenshotButton.pack(side=RIGHT)
 
-import webbrowser
-
 def about(*args):
     about=Toplevel()
     about.title("Help / About")
@@ -53,12 +52,11 @@ def about(*args):
     "The Omniscience is a program that assists with hero selection in the game Dota 2. It uses statistics and a large database of games played previously to suggest heroes that work well with or against the heroes already selected.\n\n"+\
     "The Omniscience is aware of the order in which the picks occur in the various modes. After pressing the Picks button or the Bans button, the entry box that you are expected to fill out next will be selected.\n\n"+\
     "A screenshot can be analyzed to figure out the available hero pool in the Captain's Draft or Random Draft modes. Simply make sure the Omniscience window is not covering any of the hero boxes (suggested locations are the bottom of the screen or on a second monitor) and press the Analyze Screenshot button. Make sure your game is set to Borderless Window in video options to avoid having the game minimize while you do this. In Random Draft you must first press Grid View on the right and then check the Show All Heroes checkbox at the top. Only the default hero grid and 16:9 widescreen resolutions are supported.\n\n"+\
-    "Remember that while the Omniscience can take into account the relationships among the heroes in play, the pool available, and the winrate and popularity of the heroes, it does not account for team/lane composition or what heroes each person is good at playing. These factors are at least as important as the hero picks themselves, so you must still use your judgement when picking.\n\n"+\
-    "Copyright 2014 Daniel Wilson")
+    "Remember that while the Omniscience can take into account the relationships among the heroes in play, the pool available, and the winrate and popularity of the heroes, it does not account for team/lane composition or what heroes each person is good at playing. These factors are at least as important as the hero picks themselves, so you must still use your judgement when picking.\n\n")
     version_frame = Frame(about)
     version_frame.pack(fill=X)
     Label(version_frame,text="Version 1.00").pack(side=LEFT)
-    Button(version_frame,text="Check web page for updates",command=lambda:webbrowser.open("https://dl.dropboxusercontent.com/u/16143985/data.zip")).pack(side=RIGHT)
+    Button(version_frame,text="Check web page for updates",command=lambda:webbrowser.open("https://github.com/negative-energy/omniscience/releases/")).pack(side=RIGHT)
 
 Button(radioFrame,text="About",command=about).pack(side=RIGHT)
 

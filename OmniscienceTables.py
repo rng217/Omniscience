@@ -1,6 +1,7 @@
 import zipfile
 import cPickle as pickle
 data=pickle.load(zipfile.ZipFile("data.zip").open("data.p"))
+#data=pickle.load(open("data.p"))
 
 orders={"AP":"<", "CM":"{}{}<>><{}{}><><}{><", "CD":"{}{}{}<>><<>><<>", "RD":"<>><<>><<>"}
 modeSearchDepths={"CM":3,"RD":4,"CD":4}

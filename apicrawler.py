@@ -43,6 +43,8 @@ last_match_start_time=9999999999
 radiant=range(5)
 dire=range(5,10)
 while not stop:
+    if last_match_start_time < time.time()-21600:
+        data['next_seq']+=50000
     start_get_time=time.clock()
     while not stop:
         print "Downloading "+str(data['next_seq'])+": "+time.strftime('%x %I:%M:%S %p',time.localtime(last_match_start_time))
@@ -128,7 +130,7 @@ while not stop:
     except:
         print "Error while reading: "+str(sys.exc_info()[0])
         data=backup
-    time.sleep(max(0,.8 + start_get_time - time.clock()))
+    #time.sleep(max(0,1 + start_get_time - time.clock()))
     stop=msvcrt.kbhit()
 
 pickle.dump(data,open("data.p","wb"))
