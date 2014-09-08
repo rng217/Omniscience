@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Omniscience by negative-energy</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Omniscience</h1>
+          <h2>Dota Hero Suggestion Program</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/negative-energy/omniscience/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/negative-energy/omniscience/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/negative-energy/omniscience" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p>The Omniscience is a program that assists with hero selection in the game Dota 2. You have a limited amount of time to look at what heroes are available and which have been picked, and this program is able to do much of the work for you. You gain time to choose a hero more intelligently, whether you're looking for the perfect counter, the best support, or simply a hero you like.</p>
+
+<p><img src="https://raw.githubusercontent.com/negative-energy/omniscience/master/example_images/001.png" alt="Silencer recommended against Pudge, Omniknight, and Zeus"></p>
+
+<h3>
+<a name="analysis" class="anchor" href="#analysis"><span class="octicon octicon-link"></span></a>Analysis</h3>
+
+<p>When you press the "Picks" button, the Omniscience will tabulate a list of possible heroes from best to worst, while the "Bans" button does something similar for the other team. These ratings are based on data taken from millions of games of Dota 2: which heroes are good against others, which heroes work well on the same team, which heroes have a good overall win rate, and which heroes are currently popular. The "Situationality" slider determines what strategy it should use for picking. At low situationality, underpowered heroes will be avoided. At high situationality every hero will get their time to shine. How you play is up to you. The default of 70% is a good compromise.</p>
+
+<h3>
+<a name="planning" class="anchor" href="#planning"><span class="octicon octicon-link"></span></a>Planning</h3>
+
+<p>The Omniscience is also aware of the picking order in the various game modes. After pressing the Picks or Bans button, the next entry box that should be filled out will be automatically selected. The program looks about 3 or 4 picks ahead to make sure the current pick makes sense. This is influenced by the "Chance you will select the recommended hero" slider, which tells the program how much faith to put in these plans. The default of 50% (meaning the first hero will be picked half the time, the second a fourth of the time, the third an eighth of the time, and so on) is a good compromise.</p>
+
+<h3>
+<a name="screenshots" class="anchor" href="#screenshots"><span class="octicon octicon-link"></span></a>Screenshots</h3>
+
+<p>The Random Draft and Captains Draft game modes have a limited pool of heroes from which to choose. It's not possible to enter all twenty-something heroes in time for the first round of picks (believe me, I've tried). The solution? Screenshot analysis! The Omniscience can look at the game window and determine which heroes are available automatically and instantly. Making sure that the Display Mode is set to "Windowless Border" in the game's video options, make sure the Omniscience window isn't covering the hero boxes (move it to the bottom or to another monitor) and press the "Analyze Screenshot" button. The hero pool will be determined based on the game mode that is currently selected. Note that in Random Draft, you must select Grid View on the right and then check the Show All Heroes option at the top so all the heroes are visible at once. Right now only the default hero grid and 16:9 widescreen resolutions are supported.</p>
+
+<h3>
+<a name="judgement" class="anchor" href="#judgement"><span class="octicon octicon-link"></span></a>Judgement</h3>
+
+<p>Remember that while the Omniscience can take into account the relationships among the heroes in play, the pool available, and the winrate, and the popularity of the heroes, it does not account for team/lane composition or what heroes each person likes to play. These factors are at least as important as the hero picks themselves, so remember that you still need to use your judgement when picking. Good luck!</p>
+        </section>
+
+        <footer>
+          Omniscience is maintained by <a href="https://github.com/negative-energy">negative-energy</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
