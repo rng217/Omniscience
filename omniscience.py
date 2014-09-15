@@ -60,7 +60,6 @@ Label(grid_frame,text="Your Bans").grid(row=0,column=1)
 Label(grid_frame,text="Their Picks").grid(row=0,column=3)
 Label(grid_frame,text="Their Bans").grid(row=0,column=4)
 
-
 # These are called to fix a hero name once a user has finished typing it
 def validate_all():
     for row in range(1,6):
@@ -152,6 +151,12 @@ pick_button=Button(grid_frame,text="Picks",command=refresh_picks)
 pick_button.grid(row=6,column=0)
 ban_button=Button(grid_frame,text="Bans", command=refresh_bans)
 ban_button.grid(row=6,column=1)
+
+def clear_entries():
+    for row in range(1,6):
+        for column in [0,1,3,4]:
+            grid_frame.grid_slaves(row,column)[0].delete(0,END)
+Button(grid_frame,text="Clear All", command=clear_entries).grid(row=6,column=4)
 
 # Reload data and send it to the C code whenever the mode is changed.
 def game_mode_changed(*args):
