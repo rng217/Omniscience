@@ -76,7 +76,7 @@ abbreviations={
 'kunkka':23,
 'lesh':52,'leshrac':52,
 'ls':54,'lifestealer':54,
-'ld':80,'lone druid':80,'lone':80
+'ld':80,'lone druid':80,'lone':80,
 'lycan':77,'lycanthrope':77,
 'lina':25,
 'lich':31,
@@ -96,7 +96,7 @@ abbreviations={
 'od':76,'outworld destroyer':76,'outworld demolisher':76,'outworld devourer':76,'obsidian destroyer':76,
 'pa':44,'phantom assassin':44,
 'pl':12,'lancer':12,'phantom lancer':12,
-'pudge':14,'pud':14
+'pudge':14,'pud':14,
 'puck':13,
 'pugna':45,
 'qop':39,'queen':39,'queen of pain':39,
