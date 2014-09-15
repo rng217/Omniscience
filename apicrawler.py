@@ -36,7 +36,12 @@ except:
             data[lobbyType]['synergydivisor'].append([2]*110)
             data[lobbyType]['advantagedivisor'].append([2]*110)
 
-apiurl='http://api.steampowered.com/IDOTA2Match_570/GetMatchHistoryBySequenceNum/v1?key=9785860340D0EF5C9D95549544F7E599&matches_requested=100&start_at_match_seq_num='
+#api_key = raw_input("Enter API key: ")
+api_key = open('apikey.txt').read().strip()
+if '<' in api_key:
+    print "Please enter your API key in the file apikey.txt"
+    sys.exit(0)
+apiurl='http://api.steampowered.com/IDOTA2Match_570/GetMatchHistoryBySequenceNum/v1?key='+api_key+'&matches_requested=100&start_at_match_seq_num='
 page=None
 stop=False
 last_match_start_time=9999999999
