@@ -1,87 +1,71 @@
-from OmniscienceMethods import *
 import difflib
-from Tkinter import *
-import omnisciencemodule
 import webbrowser
+from omniscience_tables import *
+from omniscience_methods import * # These are not good, reorganize
+from Tkinter import *
+import _omniscience # The part written in C
 
-masterPool=[]
+# Setting up the highest level UI elements
+master_pool=[]
 root = Tk()
-root.title("Omniscience")
+root.title("Omniscience v1.01")
 root.wm_iconbitmap('Repel.ico')
 root.resizable(0, 0)
 
-radioFrame = Frame(root)
-radioFrame.pack(fill=X)
-scaleFrame = Frame(root)
-scaleFrame.pack(fill=X)
-gridFrame = Frame(root)
-gridFrame.pack(fill=X)
+radio_frame = Frame(root)
+radio_frame.pack(fill=X)
+scale_frame = Frame(root)
+scale_frame.pack(fill=X)
+grid_frame = Frame(root)
+grid_frame.pack(fill=X)
 
-gamemode = StringVar()
-pickfirst = BooleanVar()
+game_mode = StringVar()
+pick_first = BooleanVar()
 ranked = BooleanVar()
 
-Radiobutton(radioFrame,text="All Pick",variable=gamemode,value="AP",indicatoron=0).pack(side=LEFT)
-Radiobutton(radioFrame,text="Captains Mode",variable=gamemode,value="CM",indicatoron=0).pack(side=LEFT)
-Radiobutton(radioFrame,text="Random Draft",variable=gamemode,value="RD",indicatoron=0).pack(side=LEFT)
-Radiobutton(radioFrame,text="Captains Draft",variable=gamemode,value="CD",indicatoron=0).pack(side=LEFT)
+Radiobutton(radio_frame,text="All Pick",variable=game_mode,value="AP",indicatoron=0).pack(side=LEFT)
+Radiobutton(radio_frame,text="Captains Mode",variable=game_mode,value="CM",indicatoron=0).pack(side=LEFT)
+Radiobutton(radio_frame,text="Random Draft",variable=game_mode,value="RD",indicatoron=0).pack(side=LEFT)
+Radiobutton(radio_frame,text="Captains Draft",variable=game_mode,value="CD",indicatoron=0).pack(side=LEFT)
 
-Checkbutton(radioFrame,text="First Pick",variable=pickfirst).pack(side=LEFT)
-Checkbutton(radioFrame,text="Ranked",variable=ranked).pack(side=LEFT)
+Checkbutton(radio_frame,text="First Pick",variable=pick_first).pack(side=LEFT)
+Checkbutton(radio_frame,text="Ranked",variable=ranked).pack(side=LEFT)
 
+# The Analyze Screenshot button, see OmniscienceMethods.py
 def screenshot(*args):
-    global masterPool, pickButton
-    if gamemode.get()=="CD":
-        masterPool=screenshot_CD()
-        banButton.config(state=NORMAL)
-    elif gamemode.get()=="RD":
-        masterPool=screenshot_RD()
-    pickButton.config(state=NORMAL)
+    global master_pool, pick_button
+    if game_mode.get()=="CD":
+        master_pool=screenshot_CD()
+        ban_button.config(state=NORMAL)
+    elif game_mode.get()=="RD":
+        master_pool=screenshot_RD()
+    pick_button.config(state=NORMAL)
+screenshot_button=Button(radio_frame,text="Analyze Screenshot",command=screenshot)
+screenshot_button.pack(side=RIGHT)
 
-screenshotButton=Button(radioFrame,text="Analyze Screenshot",command=screenshot)
-screenshotButton.pack(side=RIGHT)
+# Goes to the release and information page.
+Button(radio_frame,text="About",command=lambda:webbrowser.open("http://negative-energy.github.io/Omniscience/")).pack(side=RIGHT)
 
-def about(*args):
-    about=Toplevel()
-    about.title("Help / About")
-    about.resizable(0, 0)
-    txt=Text(about, font="Times", wrap=WORD)
-    txt.pack()
-    txt.insert(END,
-    "Data completeness: "+str(sum([sum([data['unranked']['advantagedivisor'][a][b] for a in heroRange]) for b in heroRange])/len(heroRange)**2/100)+"%\n\n"+\
-    "The Omniscience is a program that assists with hero selection in the game Dota 2. It uses statistics and a large database of games played previously to suggest heroes that work well with or against the heroes already selected.\n\n"+\
-    "The Omniscience is aware of the order in which the picks occur in the various modes. After pressing the Picks button or the Bans button, the entry box that you are expected to fill out next will be selected.\n\n"+\
-    "A screenshot can be analyzed to figure out the available hero pool in the Captain's Draft or Random Draft modes. Simply make sure the Omniscience window is not covering any of the hero boxes (suggested locations are the bottom of the screen or on a second monitor) and press the Analyze Screenshot button. Make sure your game is set to Borderless Window in video options to avoid having the game minimize while you do this. In Random Draft you must first press Grid View on the right and then check the Show All Heroes checkbox at the top. Only the default hero grid and 16:9 widescreen resolutions are supported.\n\n"+\
-    "Remember that while the Omniscience can take into account the relationships among the heroes in play, the pool available, and the winrate and popularity of the heroes, it does not account for team/lane composition or what heroes each person is good at playing. These factors are at least as important as the hero picks themselves, so you must still use your judgement when picking.\n\n")
-    version_frame = Frame(about)
-    version_frame.pack(fill=X)
-    Label(version_frame,text="Version 1.00").pack(side=LEFT)
-    Button(version_frame,text="Check web page for updates",command=lambda:webbrowser.open("https://github.com/negative-energy/omniscience/releases/")).pack(side=RIGHT)
+Label(scale_frame,text="Situationality of hero selection:").pack(side=LEFT)
+situationality_scale = Scale(scale_frame,orient=HORIZONTAL, from_=50)
+situationality_scale.set(70)
+situationality_scale.pack(side=LEFT)
+suggestability_scale = Scale(scale_frame,orient=HORIZONTAL)
+suggestability_scale.set(50)
+suggestability_scale.pack(side=RIGHT)
+Label(scale_frame,text="Chance you will select the recommended hero:").pack(side=RIGHT)
 
-Button(radioFrame,text="About",command=about).pack(side=RIGHT)
+Label(grid_frame,text="Your Picks").grid(row=0,column=0)
+Label(grid_frame,text="Your Bans").grid(row=0,column=1)
+Label(grid_frame,text="Their Picks").grid(row=0,column=3)
+Label(grid_frame,text="Their Bans").grid(row=0,column=4)
 
-Label(scaleFrame,text="Situationality of hero selection:").pack(side=LEFT)
-situationalityScale = Scale(scaleFrame,orient=HORIZONTAL, from_=50)
-situationalityScale.set(70)
-situationalityScale.pack(side=LEFT)
-suggestabilityScale = Scale(scaleFrame,orient=HORIZONTAL)
-suggestabilityScale.set(50)
-suggestabilityScale.pack(side=RIGHT)
-Label(scaleFrame,text="Chance you will select the recommended hero:").pack(side=RIGHT)
 
-Label(gridFrame,text="Your Picks").grid(row=0,column=0)
-Label(gridFrame,text="Your Bans").grid(row=0,column=1)
-Label(gridFrame,text="Their Picks").grid(row=0,column=3)
-Label(gridFrame,text="Their Bans").grid(row=0,column=4)
-
-for column in [0,1,3,4]:
-    for row in range(1,6):
-        Entry(gridFrame).grid(row=row,column=column)
-
+# These are called to fix a hero name once a user has finished typing it
 def validate_all():
     for row in range(1,6):
         for column in [0,1,3,4]:
-            validate_entry(gridFrame.grid_slaves(row,column)[0])
+            validate_entry(grid_frame.grid_slaves(row,column)[0])
 def validate(event):
     validate_entry(event.widget)
 def validate_entry(widget):
@@ -89,100 +73,103 @@ def validate_entry(widget):
     hero_id=interpret_hero(widget.get())
     widget.delete(0,END)
     widget.insert(0,heroes[hero_id])
+
+# Make the big grid of entry boxes for heroes
 for column in [0,1,3,4]:
     for row in range(1,6):
-        entry = gridFrame.grid_slaves(row,column)[0]
+        entry = Entry(grid_frame)
         entry.bind("<Return>",validate)
         entry.bind("<FocusOut>",validate)
+        entry.grid(row=row,column=column)
 
-pickBox = Frame(gridFrame)
-pickText = Text(pickBox)
-pickScroll = Scrollbar(pickBox,command=pickText.yview)
-pickText.config(yscrollcommand=pickScroll.set)
+# Make the big text that displays the recommendations
+pick_box = Frame(grid_frame)
+pick_text = Text(pick_box)
+pick_scroll = Scrollbar(pick_box,command=pick_text.yview)
+pick_text.config(yscrollcommand=pick_scroll.set)
+pick_box.grid(row=7,column=0,columnspan=5)
+pick_text.pack(side=LEFT)
+pick_scroll.pack(side=RIGHT, fill=Y)
 
-pickBox.grid(row=7,column=0,columnspan=5)
-pickText.pack(side=LEFT)
-pickScroll.pack(side=RIGHT, fill=Y)
-
+# The code behind the Picks and Bans buttons
+# This generates and displays the list of hero recommendations
 def refresh_picks():
     refresh("<")
 def refresh_bans():
     refresh("{")
-def refresh(firstChar):
-    omnisciencemodule.load_settings(1-situationalityScale.get()/100.,1-suggestabilityScale.get()/100.)
-    order=orders[gamemode.get()]
-    if gamemode.get()!="AP":
-        if not pickfirst.get(): order=order.translate(switchsides_trans)
-        (order,nextBox)=getNextInOrder(order,gridFrame)
-        order=order[order.index(firstChar):]
-        while order.count("<",1)+order.count(">",1) > modeSearchDepths[gamemode.get()] or order.endswith("{") or order.endswith("}"):
+# The user sometimes want preliminary recommendations before the opponent has finished selecting.
+# It will skip ahead to the first instance of first_char in the picking order string to get recommendations for the future.
+def refresh(first_char):
+    #feed settings data to the C code
+    _omniscience.load_settings(1-situationality_scale.get()/100.,1-suggestability_scale.get()/100.)
+    order=orders[game_mode.get()]
+    if game_mode.get()!="AP":
+        if not pick_first.get(): order=order.translate(switchsides_trans)
+        (order,next_box)=get_next_in_order(order,grid_frame)
+        order=order[order.index(first_char):]
+        while order.count("<",1)+order.count(">",1) > mode_search_depths[game_mode.get()] or order.endswith("{") or order.endswith("}"):
             order=order[:-1]
-        nextBox.focus_set()
+        next_box.focus_set()
 
+    # The FocusOut event fires *after* clicking the button for some reason.
+    # We have to check the hero entry boxes here too.
     validate_all()
 
     allies=[]
     enemies=[]
-    pool=list(masterPool)
+    pool=list(master_pool)
     
+    # Read in all the the hero entry boxes
     for row in range(1,6):
-        hero=gridFrame.grid_slaves(row,0)[0].get()
-        if hero:
-            hero = heroes.index(hero)
-            allies.append(hero)
-            if hero in pool: pool.remove(hero)
+        for column in [0,1,3,4]:
+            hero=grid_frame.grid_slaves(row,column)[0].get()
+            if hero:
+                hero = heroes.index(hero)
+                if column==0: allies.append(hero)
+                if column==3: enemies.append(hero)
+                if hero in pool: pool.remove(hero)
 
-        hero=gridFrame.grid_slaves(row,1)[0].get()
-        if hero:
-            hero = heroes.index(hero)
-            if hero in pool: pool.remove(hero)
+    # Pass the info to the C code and let it do the heavy lifting.
+    # The C code uses a different numbering system so we have to translate it here.
+    heroQuality=map(to_probability,_omniscience.analyze([hero_range.index(i) for i in pool],
+                                                          [hero_range.index(i) for i in allies],
+                                                          [hero_range.index(i) for i in enemies],order))
+    heroQuality=[0 if i not in pool else heroQuality[hero_range.index(i)] for i in range(len(heroes))]
 
-        hero=gridFrame.grid_slaves(row,3)[0].get()
-        if hero:
-            hero = heroes.index(hero)
-            enemies.append(hero)
-            if hero in pool: pool.remove(hero)
-
-        hero=gridFrame.grid_slaves(row,4)[0].get()
-        if hero:
-            hero = heroes.index(hero)
-            if hero in pool: pool.remove(hero)
-    heroQuality=map(to_fraction,omnisciencemodule.analyze([heroRange.index(i) for i in pool],
-                                                          [heroRange.index(i) for i in allies],
-                                                          [heroRange.index(i) for i in enemies],order))
-    heroQuality=[0 if i not in pool else heroQuality[heroRange.index(i)] for i in range(len(heroes))]
+    # Format the data and display it
     order=sorted(pool,key=lambda id: heroQuality[id],reverse=True)
-    pickText.delete("0.0",END)
+    pick_text.delete("0.0",END)
     rankrange=max(.000001,float(heroQuality[order[0]]-heroQuality[order[-1]]))
     width=55
     for i in range(len(order)):
         normalized=int((heroQuality[order[i]]-heroQuality[order[-1]])*2*width/rankrange-width)
-        pickText.insert(END,"{:<3} {:<20} {}\n".format(\
+        pick_text.insert(END,"{:<3} {:<20} {}\n".format(\
             i+1,\
             heroes[order[i]],\
             "="*normalized+" "*min(width-normalized,width+normalized)+"="*-normalized))
 
-pickButton=Button(gridFrame,text="Picks",command=refresh_picks)
-pickButton.grid(row=6,column=0)
-banButton=Button(gridFrame,text="Bans", command=refresh_bans)
-banButton.grid(row=6,column=1)
+pick_button=Button(grid_frame,text="Picks",command=refresh_picks)
+pick_button.grid(row=6,column=0)
+ban_button=Button(grid_frame,text="Bans", command=refresh_bans)
+ban_button.grid(row=6,column=1)
 
-def gamemode_changed(*args):
-    global masterPool
-    masterPool=list(cmHeroRange if gamemode.get().startswith("C") else heroRange)
-    omnisciencemodule.load_data([[to_multiplicand(synergy(a,b,ranked.get())) for a in heroRange] for b in heroRange],\
-                                [[to_multiplicand(advantage(a,b,ranked.get())) for a in heroRange] for b in heroRange],\
-                                [data['ranked' if ranked.get() and not gamemode.get()=="RD" else 'unranked'][gamemode.get()]['popularity'][a] for a in heroRange])
-    banButton.config(state=NORMAL if gamemode.get()=="CM" else DISABLED)
-    if gamemode.get()=="AP" or gamemode.get()=="CM":
-        screenshotButton.config(state=DISABLED)
-        pickButton.config(state=NORMAL)
+# Reload data and send it to the C code whenever the mode is changed.
+def game_mode_changed(*args):
+    global master_pool
+    master_pool=list(cmhero_range if game_mode.get().startswith("C") else hero_range)
+    _omniscience.load_data([[to_odds(synergy(a,b,ranked.get())) for a in hero_range] for b in hero_range],\
+                                [[to_odds(advantage(a,b,ranked.get())) for a in hero_range] for b in hero_range],\
+                                [data['ranked' if ranked.get() and not game_mode.get()=="RD" else 'unranked'][game_mode.get()]['popularity'][a] for a in hero_range])
+    ban_button.config(state=NORMAL if game_mode.get()=="CM" else DISABLED)
+    if game_mode.get()=="AP" or game_mode.get()=="CM":
+        screenshot_button.config(state=DISABLED)
+        pick_button.config(state=NORMAL)
     else:
-        screenshotButton.config(state=NORMAL)
-        pickButton.config(state=DISABLED)
+        screenshot_button.config(state=NORMAL)
+        pick_button.config(state=DISABLED)
         
-gamemode.trace("w",gamemode_changed)
-ranked.trace("w",gamemode_changed)
-gamemode.set("AP")
+game_mode.trace("w",game_mode_changed)
+ranked.trace("w",game_mode_changed)
+game_mode.set("AP")
 
 root.mainloop()
