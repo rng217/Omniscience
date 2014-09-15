@@ -2,8 +2,8 @@
 
 from distutils.core import setup, Extension
 
-setup (name = 'omnisciencemodule',
-       ext_modules = [Extension('omnisciencemodule',sources = ['omnisciencemodule.c'],extra_compile_args=['-std=gnu99','-Ofast'])])
+setup (name = '_omniscience',
+       ext_modules = [Extension('_omniscience',sources = ['_omniscience.c'],extra_compile_args=['-std=gnu99','-Ofast'])])
 
 import shutil
-shutil.copy("./build/lib.win32-2.7/omnisciencemodule.pyd",".")
+shutil.copy("./build/lib.win32-2.7/_omniscience.pyd",".")

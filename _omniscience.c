@@ -8,10 +8,14 @@ double popularity[nHeroes];
 double tryhard;
 double agency;
 
+//This is used in the sort function
 int compdouble(const void *a, const void *b) {
   return *(double*)a-*(double*)b;
 }
 
+//Searches recursively several turns ahead, but doesn't assume that either side picks the "best" hero each time
+//The user's side picks based on the Agency variable (the Chance you will select variable)
+//The opponent picks based on popularity alone... perhaps add another slider to give them more intelligence?
 double pseudo_minimax(double* ourPool, double* theirPool, char* mode, int nBans, double score) {
     while(*mode=='{' || *mode=='}') {
         if(*mode=='{') nBans++;
@@ -20,13 +24,12 @@ double pseudo_minimax(double* ourPool, double* theirPool, char* mode, int nBans,
     if(!*mode) return 1;
     if(*mode=='<') {//our pick
         double maxbest=99;
-        double best[10]={90,91,92,93,94,95,96,97,98,99};
+        double best[10]={90,91,92,93,94,95,96,97,98,99}; //Must have at least 10 heroes
         for(int i=0;i<nHeroes;i++) {
             if(!ourPool[i]) continue;
             double value;
             if(!mode[1]) {
                 value=score*ourPool[i];//could speed up slightly by multiplying score later
-                if(isnan(value)) printf("A.\n");
             } else {
                 double ourNewPool[nHeroes], theirNewPool[nHeroes];
                 for(int j=0; j<nHeroes; j++) {
@@ -37,8 +40,8 @@ double pseudo_minimax(double* ourPool, double* theirPool, char* mode, int nBans,
                         theirNewPool[j]=theirPool[j]*advantage[i][j];
                     }
                 }
+                //Recurse, moving forward in the picking order and precalculating how well we're doing so far
                 value=pseudo_minimax(ourNewPool, theirNewPool, mode+1, nBans,score*ourPool[i]);
-                if(isnan(value)) printf("B.\n");
             }
             if(value<maxbest) {
                 double newmaxbest=0;
@@ -103,7 +106,6 @@ static PyObject* load_settings(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
-
 static PyObject* load_data(PyObject *self, PyObject *args) {
     PyObject* pysynergy,* pyadvantage,* pypopularity;
     if (!PyArg_ParseTuple(args, "O!O!O!",&PyList_Type,&pysynergy,&PyList_Type,&pyadvantage,&PyList_Type,&pypopularity))
@@ -113,6 +115,7 @@ static PyObject* load_data(PyObject *self, PyObject *args) {
     for(int i=0;i<nHeroes;i++) {
         for(int j=0;j<nHeroes;j++) {
             if(i==j) continue;
+            //This is the purely situational synergy and advantage, offset be the heroes individual winrates
             synergy[i][j]=PyFloat_AsDouble(PyList_GetItem(PyList_GetItem(pysynergy,i),j))/synergy[j][j]/synergy[i][i];
             advantage[i][j]=PyFloat_AsDouble(PyList_GetItem(PyList_GetItem(pyadvantage,j),i))*synergy[j][j]/synergy[i][i];
         }
@@ -120,11 +123,11 @@ static PyObject* load_data(PyObject *self, PyObject *args) {
     }
     for(int i=0;i<nHeroes;i++) {
         popularity[i]=nHeroes*PyFloat_AsDouble(PyList_GetItem(pypopularity,i))/poptotal;
-        //printf("%f\n",popularity[i]);
     }
     Py_RETURN_NONE;
 }
 
+//The top level of recursion, which has to actually keep track of the values for each hero
 static PyObject* analyze(PyObject *self, PyObject *args) {
     PyObject* pypool,* pyallies,* pyenemies;
     char* mode;
@@ -132,28 +135,32 @@ static PyObject* analyze(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "O!O!O!s",&PyList_Type,&pypool,&PyList_Type,&pyallies,&PyList_Type,&pyenemies,&mode))
         return NULL;
     
+    //initialize the desirability calculations
     double ourPool[nHeroes]={0};
     double theirPool[nHeroes]={0};
     for(int i=0;i<PyList_Size(pypool);i++) {
         int hero=PyInt_AsLong(PyList_GetItem(pypool,i));
+        //Start with the individual winrates, with the importance of this number determined by the user
         ourPool[hero]=1./((1./(synergy[hero][hero]+1.)-.5)*tryhard+.5)-1.;
         theirPool[hero]=1/synergy[hero][hero];
-        for(int j=0;j<PyList_Size(pyallies);j++) {//untested
+        //Figure out the synergy/advantage of each possible choice with what's already been chosen
+        for(int j=0;j<PyList_Size(pyallies);j++) {
             int ally=PyInt_AsLong(PyList_GetItem(pyallies,j));
-            ourPool[hero]*=synergy[ally][ally]*synergy[hero][ally];
-            theirPool[hero]/=synergy[ally][ally]*advantage[hero][ally];
+            ourPool[hero]*=synergy[hero][ally];
+            theirPool[hero]/=advantage[hero][ally];
         }
-        for(int j=0;j<PyList_Size(pyenemies);j++) {//untested
+        for(int j=0;j<PyList_Size(pyenemies);j++) {
             int enemy=PyInt_AsLong(PyList_GetItem(pyenemies,j));
-            ourPool[hero]*=advantage[hero][enemy]/synergy[enemy][enemy];//more dividing?
-            theirPool[hero]/=synergy[hero][enemy]/synergy[enemy][enemy];
+            ourPool[hero]*=advantage[hero][enemy];
+            theirPool[hero]/=synergy[hero][enemy];
         }
     }
     PyObject* choiceValues = PyList_New(nHeroes);
+    //Start recursively calculating the expected benefit of each hero
     if(*mode=='{') {//our ban
         for(int i=0;i<nHeroes;i++) {
             if(ourPool[i]==0) {
-                PyList_SET_ITEM(choiceValues,i,PyFloat_FromDouble(0)); //necessary?
+                PyList_SET_ITEM(choiceValues,i,PyFloat_FromDouble(0));
                 continue;
             }
             double ourOld=ourPool[i];
@@ -185,13 +192,13 @@ static PyObject* analyze(PyObject *self, PyObject *args) {
     return choiceValues;
 }
 
-static PyMethodDef omnisciencemethods[] = {
+static PyMethodDef _omniscience[] = {
     {"analyze",  analyze, METH_VARARGS, "Determine hero viability."},
     {"load_data",  load_data, METH_VARARGS, "Load statistical data."},
     {"load_settings",  load_settings, METH_VARARGS, "Load statistical data."},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
-PyMODINIT_FUNC initomnisciencemodule(void) {
-    (void) Py_InitModule("omnisciencemodule", omnisciencemethods);
+PyMODINIT_FUNC init_omniscience(void) {
+    (void) Py_InitModule("_omniscience", _omniscience);
 }

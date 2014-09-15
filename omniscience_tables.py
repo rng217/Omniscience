@@ -3,14 +3,23 @@ import cPickle as pickle
 data=pickle.load(zipfile.ZipFile("data.zip").open("data.p"))
 #data=pickle.load(open("data.p"))
 
-orders={"AP":"<", "CM":"{}{}<>><{}{}><><}{><", "CD":"{}{}{}<>><<>><<>", "RD":"<>><<>><<>"}
-modeSearchDepths={"CM":3,"RD":4,"CD":4}
+# < is our pick
+# > is theirs
+# { is our ban
+# } is theirs
+orders={"AP":"<",
+        "CM":"{}{}<>><{}{}><><}{><",
+        "CD":"{}{}{}<>><<>><<>",
+        "RD":"<>><<>><<>"}
+# RD and CD have smaller pools and can search deeper
+mode_search_depths={"CM":3,"RD":4,"CD":4} # I will likely automate this
 
 import string
 switchsides_trans = string.maketrans("{}<>","}{><")
 
-heroRange=range(23)+range(24,107)+range(108,110)
-cmHeroRange=range(23)+range(24,60)+range(61,104)+[105]
+hero_range=range(23)+range(24,107)+range(108,110)
+#Broodmother, Earth Spirit, Terrorblade, Phoenix, Legion Commander, and Techies are not available in CM or CD
+cmhero_range=range(23)+range(24,60)+range(61,104)+[105]
 
 heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","Earthshaker","Juggernaut","Mirana",
         "Morphling","Shadow Fiend","Phantom Lancer","Puck","Pudge","Razor","Sand King","Storm Spirit","Sven","Tiny",
@@ -26,6 +35,7 @@ heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","E
         "Bristleback","Tusk","Skywrath Mage","Abaddon","Elder Titan","Legion Commander","Techies","Ember Spirit",
         "Earth Spirit","Abyssal Underlord","Terrorblade","Phoenix"]
 
+# The hero name guesser uses these to determine which hero a player has typed in
 abbreviations={
 'ab':102,'abaddon':102,
 'al':73,'alch':73,'alchemist':73,
@@ -136,89 +146,10 @@ abbreviations={
 'phoenix':110,
 'techies':105,'goblin':105,'tech':105}
 
-heroGroupTable=[[6, 17, 18, 22, 37, 48, 50, 56, 58, 72, 77, 82, 90, 95, 97, 98, 99, 102, 103, 106, 109],
-                [1, 13, 15, 27, 28, 41, 53, 59, 68, 70, 76, 80, 84, 96, 101],
-                [0, 5, 7, 8, 9, 11, 19, 31, 34, 45, 47, 61, 69, 71, 79, 88, 94, 105],
-                [3, 10, 14, 39, 40, 43, 46, 55, 60, 62, 66, 81, 87, 92, 93, 108],
-                [4, 12, 16, 20, 21, 24, 26, 33, 52, 57, 63, 65, 74, 83, 85, 86, 89, 100],
-                [2, 30, 25, 29, 32, 35, 36, 38, 42, 44, 49, 51, 54, 64, 67, 73, 75, 78, 91]]
-
-heroTypes={ #unused and out of date
-"lane support":
-["Crystal Maiden","Dazzle","Earthshaker","Io","Jakiro","Lich","Lion","Omniknight",
-"Treant Protector","Vengeful Spirit","Warlock"],
-
-"carry":
-["Alchemist","Anti-Mage","Bloodseeker","Bounty Hunter","Brewmaster","Broodmother","Chaos Knight",
-"Clinkz","Doom","Dragon Knight","Drow Ranger","Faceless Void","Huskar","Invoker","Juggernaut",
-"Kunkka","Lifestealer","Lone Druid","Luna","Lycanthrope","Magnus","Medusa","Meepo","Mirana",
-"Morphling","Naga Siren","Nature's Prophet","Necrolyte","Outworld Devourer","Phantom Assassin",
-"Phantom Lancer","Queen of Pain","Razor","Riki","Shadow Fiend","Silencer","Wraith King",
-"Slardar","Sniper","Spectre","Spirit Breaker","Storm Spirit","Sven","Templar Assassin",
-"Troll Warlord","Ursa","Viper","Weaver","Ember Spirit"],
-
-"disabler":
-["Alchemist","Ancient Apparition","Axe","Bane","Batrider","Beastmaster","Bristleback",
-"Centaur Warrunner","Chaos Knight","Crystal Maiden","Disruptor","Dragon Knight","Earthshaker",
-"Enigma","Faceless Void","Gyrocopter","Jakiro","Kunkka","Leshrac","Lina","Lion","Magnus","Meepo",
-"Mirana","Naga Siren","Nyx Assassin","Ogre Magi","Puck","Pudge","Rubick","Sand King",
-"Shadow Demon","Shadow Shaman","Wraith King","Slardar","Spirit Breaker","Storm Spirit","Sven",
-"Tidehunter","Tiny","Treant Protector","Undying","Vengeful Spirit","Visage","Warlock","Windrunner",
-"Witch Doctor","Ember Spirit"],
-
-"ganker":
-["Alchemist","Batrider","Beastmaster","Bloodseeker","Bounty Hunter","Chaos Knight","Clinkz",
-"Enchantress","Gyrocopter","Kunkka","Lycanthrope","Mirana","Nature's Prophet","Night Stalker",
-"Nyx Assassin","Ogre Magi","Phantom Assassin","Pudge","Queen of Pain","Riki","Shadow Demon",
-"Spirit Breaker","Storm Spirit","Timbersaw","Tinker","Tiny","Viper","Slark"],
-
-"nuker":
-["Bane","Batrider","Bounty Hunter","Crystal Maiden","Dark Seer","Death Prophet","Disruptor","Doom",
-"Gyrocopter","Invoker","Io","Jakiro","Leshrac","Lich","Lina","Lion","Luna","Magnus","Mirana",
-"Morphling","Nyx Assassin","Ogre Magi","Puck","Pugna","Queen of Pain","Razor","Sand King",
-"Shadow Demon","Shadow Fiend","Shadow Shaman","Skywrath Mage","Tinker","Tiny","Venomancer",
-"Visage","Windrunner","Zeus","Ember Spirit"],
-
-"initiator":
-["Axe","Batrider","Beastmaster","Brewmaster","Bristleback","Centaur Warrunner","Clockwerk",
-"Dark Seer","Disruptor","Earthshaker","Elder Titan","Enigma","Faceless Void","Gyrocopter",
-"Huskar","Invoker","Kunkka","Magnus","Meepo","Morphling","Night Stalker","Puck","Sand King",
-"Silencer","Slardar","Spirit Breaker","Storm Spirit","Sven","Tidehunter","Timbersaw","Tiny",
-"Treant Protector","Tusk","Undying","Vengeful Spirit","Venomancer","Warlock","Earth Spirit"],
-
-"Jungler":
-["Axe","Bloodseeker","Chen","Enchantress","Enigma","Lifestealer","Lone Druid","Lycanthrope",
-"Nature's Prophet","Ursa"],
-
-"pusher":
-["Brewmaster","Broodmother","Chaos Knight","Chen","Death Prophet","Dragon Knight","Enchantress",
-"Enigma","Jakiro","Juggernaut","Keeper of the Light","Leshrac","Lone Druid","Lycanthrope",
-"Naga Siren","Nature's Prophet","Phantom Lancer","Pugna","Rubick","Shadow Shaman","Tinker",
-"Undying","Venomancer"],
-
-"roamer":
-["Ancient Apparition","Bane","Clockwerk","Crystal Maiden","Dark Seer","Disruptor","Earthshaker",
-"Jakiro","Leshrac","Lich","Lina","Lion","Puck","Sand King","Shadow Shaman","Slardar","Sven",
-"Tidehunter","Vengeful Spirit","Venomancer","Windrunner","Witch Doctor","Zeus"],
-
-"durable":
-["Alchemist","Axe","Beastmaster","Brewmaster","Bristleback","Centaur Warrunner","Chaos Knight",
-"Clockwerk","Death Prophet","Doom","Dragon Knight","Elder Titan","Enchantress","Huskar","Kunkka",
-"Lifestealer","Lone Druid","Lycanthrope","Necrolyte","Night Stalker","Ogre Magi","Omniknight",
-"Pudge","Razor","Wraith King","Slardar","Spectre","Spirit Breaker","Tidehunter","Timbersaw",
-"Tiny","Treant Protector","Tusk","Undying","Ursa","Viper","Visage","Ember Spirit"],
-
-"escape":
-["Anti-Mage","Batrider","Bounty Hunter","Broodmother","Clinkz","Dark Seer","Faceless Void",
-"Invoker","Lifestealer","Mirana","Morphling","Naga Siren","Nature's Prophet","Phantom Assassin",
-"Phantom Lancer","Puck","Queen of Pain","Riki","Slark","Storm Spirit","Templar Assassin","Weaver",
-"Windrunner"],
-
-#Semi-Carry: See Ganker
-
-"support":
-["Ancient Apparition","Bane","Chen","Crystal Maiden","Dazzle","Disruptor","Earthshaker",
-"Enchantress","Io","Leshrac","Lich","Lina","Lion","Necrolyte","Omniknight","Pugna","Shadow Demon",
-"Shadow Shaman","Silencer","Skywrath Mage","Sven","Tidehunter","Vengeful Spirit","Venomancer",
-"Warlock","Windrunner","Witch Doctor","Zeus"]
-}
+# The arrangement of hero icons in Captains Draft
+hero_group_table=[[6, 17, 18, 22, 37, 48, 50, 56, 58, 72, 77, 82, 90, 95, 97, 98, 99, 102, 103, 106, 109],
+                 [1, 13, 15, 27, 28, 41, 53, 59, 68, 70, 76, 80, 84, 96, 101],
+                 [0, 5, 7, 8, 9, 11, 19, 31, 34, 45, 47, 61, 69, 71, 79, 88, 94, 105],
+                 [3, 10, 14, 39, 40, 43, 46, 55, 60, 62, 66, 81, 87, 92, 93, 108],
+                 [4, 12, 16, 20, 21, 24, 26, 33, 52, 57, 63, 65, 74, 83, 85, 86, 89, 100],
+                 [2, 30, 25, 29, 32, 35, 36, 38, 42, 44, 49, 51, 54, 64, 67, 73, 75, 78, 91]]
