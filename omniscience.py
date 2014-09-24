@@ -8,7 +8,7 @@ import _omniscience # The part written in C
 # Setting up the highest level UI elements
 master_pool=[]
 root = Tk()
-root.title("Omniscience v1.01")
+root.title("Omniscience v1.10")
 root.wm_iconbitmap('Repel.ico')
 root.resizable(0, 0)
 
@@ -102,7 +102,9 @@ def refresh(first_char):
     #feed settings data to the C code
     _omniscience.load_settings(1-situationality_scale.get()/100.,1-suggestability_scale.get()/100.)
     order=orders[game_mode.get()]
-    if game_mode.get()!="AP":
+    if suggestability_scale.get()==0: # Not useful to run minimax at this point
+        order="<"
+    else:
         if not pick_first.get(): order=order.translate(switchsides_trans)
         (order,next_box)=get_next_in_order(order,grid_frame)
         order=order[order.index(first_char):]

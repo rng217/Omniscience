@@ -7,19 +7,15 @@ data=pickle.load(zipfile.ZipFile("data.zip").open("data.p"))
 # > is theirs
 # { is our ban
 # } is theirs
-orders={"AP":"<",
-        "CM":"{}{}<>><{}{}><><}{><",
+orders={"AP":"<><><><><>",
+        "CM":"{}{}<>><}{{}><><}{><", # Is this what it means "3rd ban phase order is swapped?"
         "CD":"{}{}{}<>><<>><<>",
         "RD":"<>><<>><<>"}
 # RD and CD have smaller pools and can search deeper
-mode_search_depths={"CM":3,"RD":4,"CD":4} # I will likely automate this
+mode_search_depths={"AP":3,"CM":3,"RD":4,"CD":4} # I will likely automate this
 
 import string
 switchsides_trans = string.maketrans("{}<>","}{><")
-
-hero_range=range(23)+range(24,107)+range(108,110)
-#Broodmother, Earth Spirit, Terrorblade, Phoenix, Legion Commander, and Techies are not available in CM or CD
-cmhero_range=range(23)+range(24,60)+range(61,104)+[105]
 
 heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","Earthshaker","Juggernaut","Mirana",
         "Morphling","Shadow Fiend","Phantom Lancer","Puck","Pudge","Razor","Sand King","Storm Spirit","Sven","Tiny",
@@ -34,6 +30,18 @@ heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","E
         "Keeper of the Light","Io","Visage","Slark","Medusa","Troll Warlord","Centaur Warrunner","Magnus","Timbersaw",
         "Bristleback","Tusk","Skywrath Mage","Abaddon","Elder Titan","Legion Commander","Techies","Ember Spirit",
         "Earth Spirit","Abyssal Underlord","Terrorblade","Phoenix"]
+
+hero_range=range(len(heroes))
+hero_range.remove(heroes.index("???"))
+hero_range.remove(heroes.index("Abyssal Underlord"))
+
+cmhero_range=list(hero_range)
+cmhero_range.remove(heroes.index("Broodmother"))
+cmhero_range.remove(heroes.index("Earth Spirit"))
+cmhero_range.remove(heroes.index("Phoenix"))
+cmhero_range.remove(heroes.index("Techies"))
+cmhero_range.remove(heroes.index("Bloodseeker"))
+cmhero_range.remove(heroes.index("Phantom Lancer"))
 
 # The hero name guesser uses these to determine which hero a player has typed in
 abbreviations={
