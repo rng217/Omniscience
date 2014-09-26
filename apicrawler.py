@@ -6,7 +6,7 @@ import msvcrt
 import sys
 import copy
 
-alpha = 10000.
+alpha = 5000. # number of games measured for a probability variable before it starts to "replace" old data
 
 data={
     'next_seq': 783590653,

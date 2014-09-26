@@ -57,11 +57,15 @@ def screenshot_RD():
                                                       int((blockX+offset*(hero_number_within_group%7)+51)*rescale), int((blockY+offset*(hero_number_within_group/7)+51)*rescale)))
             #image.show()
             brightness=max(ImageStat.Stat(image).mean)
-            if heroes[hero_group_table[group][hero_number_within_group]]=="Spectre":
-                print brightness
-                brightness+=23 #spectre is super dark
-            if brightness>46.6:
-                pool.append(hero_group_table[group][hero_number_within_group])
+            hero_id = hero_group_table[group][hero_number_within_group]
+            if heroes[hero_id]=="Spectre":
+                brightness+=25 # Spectre is super dark
+            elif heroes[hero_id]=="Puck" or heroes[hero_id]=="Io": # Puck and Io are very bright
+                brightness-=10
+            if brightness>45:
+                pool.append(hero_id)
+            if brightness>35 and brightness<55:
+                print heroes[hero_id],brightness
     if len(pool)>24 or len(pool)<14: tkMessageBox.showwarning("Warning","Warning! Number of heroes detected ("+str(len(pool))+") is wrong!")
     return pool
 
