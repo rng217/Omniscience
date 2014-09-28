@@ -9,7 +9,7 @@ import copy
 alpha = 5000. # number of games measured for a probability variable before it starts to "replace" old data
 
 data={
-    'next_seq': 783590653,
+    'next_seq': 823814043, #6.82 update
     'ranked':{
         'synergy':[], 'advantage':[], 'synergydivisor':[], 'advantagedivisor':[],
         'AP':{'popularity':[0.]*110, 'popularitydivisor':0},
@@ -94,7 +94,7 @@ while not stop:
             elif line[2:18]=='"statusDetail": ':
                 print line[19:-2]
             elif line[4:17]=='"game_mode": ':
-                mode={1:'AP', 2:'CM', 3:'RD', 16:'CD'}.get(int(line[17:].rstrip(", \n")),None)
+                mode={1:'AP', 2:'CM', 3:'RD', 16:'CD', 22:'AP'}.get(int(line[17:].rstrip(", \n")),None)
                 if mode and good_game and lobbyType in data:
                     if data[lobbyType][mode]['popularitydivisor']<alpha:
                         data[lobbyType][mode]['popularitydivisor']+=1
