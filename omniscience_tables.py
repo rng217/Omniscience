@@ -8,11 +8,11 @@ data=pickle.load(zipfile.ZipFile("data.zip").open("data.p"))
 # { is our ban
 # } is theirs
 orders={"AP":"<><><><><>",
-        "CM":"{}{}<>><}{{}><><}{><", # Is this what it means "3rd ban phase order is swapped?"
+        "CM":"{}{}<>><{}{}><><{}><",
         "CD":"{}{}{}<>><<>><<>",
         "RD":"<>><<>><<>"}
 # RD and CD have smaller pools and can search deeper
-mode_search_depths={"AP":3,"CM":3,"RD":4,"CD":4} # I will likely automate this
+mode_search_min_times={"AP":1,"CM":1,"RD":1,"CD":1} # Are there better numbers to put here?
 
 import string
 switchsides_trans = string.maketrans("{}<>","}{><")

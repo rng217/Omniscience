@@ -3,11 +3,25 @@ import webbrowser
 from omniscience_tables import *
 from omniscience_methods import * # These are not good, reorganize
 from Tkinter import *
+import time
 import _omniscience # The part written in C
 
 # Setting up the highest level UI elements
 master_pool=[]
 root = Tk()
+
+## Display amount of data loaded so far
+#divisor_total = {'ranked':0,'unranked':0}
+#for r in ['ranked','unranked']:
+#    for m in ['synergydivisor','advantagedivisor']:
+#        for a in hero_range:
+#            for b in hero_range:
+#                divisor_total[r] += data[r][m][a][b]
+#    for m in ['AP','RD','CM','CD']:
+#        print r,m,data[r][m]['popularitydivisor']
+#print "Adv/Syn completeness ranked: "+str(round(100.*divisor_total['ranked']/len(hero_range)**2/2/5000,2))+"%"
+#print "Adv/Syn completeness unranked: "+str(round(100.*divisor_total['unranked']/len(hero_range)**2/2/5000,2))+"%"
+
 root.title("Omniscience v1.10")
 root.wm_iconbitmap('Repel.ico')
 root.resizable(0, 0)
@@ -102,15 +116,7 @@ def refresh(first_char):
     #feed settings data to the C code
     _omniscience.load_settings(1-situationality_scale.get()/100.,1-suggestability_scale.get()/100.)
     order=orders[game_mode.get()]
-    if suggestability_scale.get()==0: # Not useful to run minimax at this point
-        order="<"
-    else:
-        if not pick_first.get(): order=order.translate(switchsides_trans)
-        (order,next_box)=get_next_in_order(order,grid_frame)
-        order=order[order.index(first_char):]
-        while order.count("<",1)+order.count(">",1) > mode_search_depths[game_mode.get()] or order.endswith("{") or order.endswith("}"):
-            order=order[:-1]
-        next_box.focus_set()
+    # Unranked AP has no order. When suggestability is 0 minimax is not very useful, so skip it.
 
     # The FocusOut event fires *after* clicking the button for some reason.
     # We have to check the hero entry boxes here too.
@@ -130,20 +136,36 @@ def refresh(first_char):
                 if column==3: enemies.append(hero)
                 if hero in pool: pool.remove(hero)
 
-    # Pass the info to the C code and let it do the heavy lifting.
-    # The C code uses a different numbering system so we have to translate it here.
-    heroQuality=map(to_probability,_omniscience.analyze([hero_range.index(i) for i in pool],
-                                                          [hero_range.index(i) for i in allies],
-                                                          [hero_range.index(i) for i in enemies],order))
-    heroQuality=[0 if i not in pool else heroQuality[hero_range.index(i)] for i in range(len(heroes))]
+    if (not ranked.get() and game_mode.get()=='AP') or suggestability_scale.get()==0:
+        order="<"
+    else:
+        if not pick_first.get(): order=order.translate(switchsides_trans)
+        (order,next_box)=get_next_in_order(order,grid_frame)
+        order=order[order.index(first_char):]
+        next_box.focus_set()
+
+    # Iteratively increase the search depth until it starts taking too long
+    length = 0
+    start_time = time.clock()
+    hero_quality = None
+    while time.clock() < start_time+mode_search_min_times[game_mode.get()] and length < len(order):
+        length += 1
+        while length < len(order) and (order[length-1] == '{' or order[length-1]=='{'):
+            length += 1
+        # Pass the info to the C code and let it do the heavy lifting.
+        # The C code uses a different numbering system so we have to translate it here.
+        hero_quality=map(to_probability,_omniscience.analyze([hero_range.index(i) for i in pool],
+                                                              [hero_range.index(i) for i in allies],
+                                                              [hero_range.index(i) for i in enemies],order[:length]))
+    hero_quality=[0 if i not in pool else hero_quality[hero_range.index(i)] for i in range(len(heroes))]
 
     # Format the data and display it
-    order=sorted(pool,key=lambda id: heroQuality[id],reverse=True)
+    order=sorted(pool,key=lambda id: hero_quality[id],reverse=True)
     pick_text.delete("0.0",END)
-    rankrange=max(.000001,float(heroQuality[order[0]]-heroQuality[order[-1]]))
+    rankrange=max(.000001,float(hero_quality[order[0]]-hero_quality[order[-1]]))
     width=55
     for i in range(len(order)):
-        normalized=int((heroQuality[order[i]]-heroQuality[order[-1]])*2*width/rankrange-width)
+        normalized=int((hero_quality[order[i]]-hero_quality[order[-1]])*2*width/rankrange-width)
         pick_text.insert(END,"{:<3} {:<20} {}\n".format(\
             i+1,\
             heroes[order[i]],\

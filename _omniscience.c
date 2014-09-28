@@ -95,7 +95,6 @@ double pseudo_minimax(double* ourPool, double* theirPool, char* mode, int nBans,
                 denominator+=popularity[i];
             }
         }
-        if(denominator==0) printf("D.\n");
         return denominator/total-1;
     }
 }
