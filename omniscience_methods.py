@@ -80,13 +80,12 @@ def screenshot_CD():
         return
     for group in range(6):
         for hero_number_within_group in range(len(hero_group_table[group])):
-            if hero_group_table[group][hero_number_within_group] not in cmhero_range: continue #phoenix is a black box and is messing up detection
             blockX,blockY=hero_group_pixel_offsets_CD[aspect][group]
-            image = screenshot.crop((int((blockX+81*(hero_number_within_group%4)+2)*rescale), int((blockY+46*(hero_number_within_group/4)+2)*rescale),\
-                                     int((blockX+81*(hero_number_within_group%4)+78-2)*rescale), int((blockY+46*(hero_number_within_group/4)+44-2)*rescale)))
+            image = screenshot.crop((int((blockX+66*(hero_number_within_group%5)+2)*rescale), int((blockY+43*(hero_number_within_group/5)+2)*rescale),\
+                                     int((blockX+66*(hero_number_within_group%5)+60-2)*rescale), int((blockY+43*(hero_number_within_group/5)+33-2)*rescale)))
             #image.show()
             stats=ImageStat.Stat(image)
-            if max(stats.mean)>20.5: #puck is brightest at 20.15
+            if max(stats.mean)>21: #puck is brightest at 20.85
                 pool.append(hero_group_table[group][hero_number_within_group])
     if len(pool)>27 or len(pool)<11: tkMessageBox.showwarning("Warning","Warning! Number of heroes detected ("+str(len(pool))+") is wrong!")
     return pool
