@@ -12,7 +12,7 @@ orders={"AP":"<><><><><>",
         "CD":"{}{}{}<>><<>><<>",
         "RD":"<>><<>><<>"}
 # RD and CD have smaller pools and can search deeper
-mode_search_min_times={"AP":1,"CM":1,"RD":1,"CD":1} # Are there better numbers to put here?
+mode_search_min_times={"AP":.1,"CM":.1,"RD":.1,"CD":.1} # Max time is about 100 times these values
 
 import string
 switchsides_trans = string.maketrans("{}<>","}{><")

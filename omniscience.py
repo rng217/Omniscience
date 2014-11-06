@@ -11,16 +11,16 @@ master_pool=[]
 root = Tk()
 
 ## Display amount of data loaded so far
-#divisor_total = {'ranked':0,'unranked':0}
-#for r in ['ranked','unranked']:
-#    for m in ['synergydivisor','advantagedivisor']:
-#        for a in hero_range:
-#            for b in hero_range:
-#                divisor_total[r] += data[r][m][a][b]
-#    for m in ['AP','RD','CM','CD']:
-#        print r,m,data[r][m]['popularitydivisor']
-#print "Adv/Syn completeness ranked: "+str(round(100.*divisor_total['ranked']/len(hero_range)**2/2/5000,2))+"%"
-#print "Adv/Syn completeness unranked: "+str(round(100.*divisor_total['unranked']/len(hero_range)**2/2/5000,2))+"%"
+divisor_total = {'ranked':0,'unranked':0}
+for r in ['ranked','unranked']:
+    for m in ['synergydivisor','advantagedivisor']:
+        for a in hero_range:
+            for b in hero_range:
+                divisor_total[r] += data[r][m][a][b]
+    for m in ['AP','RD','CM','CD']:
+        print r,m,data[r][m]['popularitydivisor']
+print "Adv/Syn completeness ranked: "+str(round(100.*divisor_total['ranked']/len(hero_range)**2/2/5000,2))+"%"
+print "Adv/Syn completeness unranked: "+str(round(100.*divisor_total['unranked']/len(hero_range)**2/2/5000,2))+"%"
 
 root.title("Omniscience v1.10")
 root.wm_iconbitmap('Repel.ico')
