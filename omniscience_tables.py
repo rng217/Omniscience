@@ -29,7 +29,7 @@ heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","E
         "Meepo","Treant Protector","Ogre Magi","Undying","Rubick","Disruptor","Nyx Assassin","Naga Siren",
         "Keeper of the Light","Io","Visage","Slark","Medusa","Troll Warlord","Centaur Warrunner","Magnus","Timbersaw",
         "Bristleback","Tusk","Skywrath Mage","Abaddon","Elder Titan","Legion Commander","Techies","Ember Spirit",
-        "Earth Spirit","Abyssal Underlord","Terrorblade","Phoenix"]
+        "Earth Spirit","Abyssal Underlord","Terrorblade","Phoenix","Oracle"]
 
 hero_range=range(len(heroes))
 hero_range.remove(heroes.index("???"))
@@ -150,14 +150,15 @@ abbreviations={
 'tresdin':104,'lc':104,'legion':104,'commander':104,'legion commander':104,
 'tb':109,'terrorblade':109,'terror':109,
 'phoenix':110,
-'techies':105,'goblin':105,'tech':105}
+'techies':105,'goblin':105,'tech':105,
+'oracle':111,'ora':111}
 
 # The arrangement of hero icons in Captains Draft / Random Draft
 hero_group_table=[[6, 17, 18, 22, 37, 48, 50, 56, 58, 72, 77, 82, 90, 95, 97, 98, 99, 102, 103, 106, 109],
                  [1, 13, 15, 27, 28, 41, 53, 59, 68, 70, 76, 80, 84, 96, 101],
                  [0, 5, 7, 8, 9, 11, 19, 31, 34, 45, 47, 61, 69, 71, 79, 88, 94, 105],
                  [3, 10, 14, 39, 40, 43, 46, 55, 60, 62, 66, 81, 87, 92, 93, 108],
-                 [4, 12, 16, 20, 21, 24, 26, 33, 52, 57, 63, 65, 74, 83, 85, 86, 89, 100, 104],
+                 [4, 12, 16, 20, 21, 24, 26, 33, 52, 57, 63, 65, 74, 83, 85, 86, 89, 100, 104, 111],
                  [2, 30, 25, 29, 32, 35, 36, 38, 42, 44, 49, 51, 54, 64, 67, 73, 75, 78, 91]]
 
 hero_group_pixel_offsets_RD = {
