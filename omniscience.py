@@ -22,7 +22,7 @@ for r in ['ranked','unranked']:
 print "Adv/Syn completeness ranked: "+str(round(100.*divisor_total['ranked']/len(hero_range)**2/2/5000,2))+"%"
 print "Adv/Syn completeness unranked: "+str(round(100.*divisor_total['unranked']/len(hero_range)**2/2/5000,2))+"%"
 
-root.title("Omniscience v1.10")
+root.title("Omniscience v1.20")
 root.wm_iconbitmap('Repel.ico')
 root.resizable(0, 0)
 
@@ -136,7 +136,7 @@ def refresh(first_char):
                 if column==3: enemies.append(hero)
                 if hero in pool: pool.remove(hero)
 
-    if (not ranked.get() and game_mode.get()=='AP') or suggestability_scale.get()==0:
+    if not ranked.get() and game_mode.get()=='AP':
         order="<"
     else:
         if not pick_first.get(): order=order.translate(switchsides_trans)
