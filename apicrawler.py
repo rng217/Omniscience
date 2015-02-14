@@ -9,20 +9,20 @@ import copy
 alpha = 5000. # number of games measured for a probability variable before it starts to "replace" old data
 
 data={
-    'next_seq': 823814043, #6.82 update
+    'next_seq': 1000000000, #6.83 update
     'ranked':{
         'synergy':[], 'advantage':[], 'synergydivisor':[], 'advantagedivisor':[],
-        'AP':{'popularity':[0.]*111, 'popularitydivisor':0},
-        'RD':{'popularity':[0.]*111, 'popularitydivisor':0},
-        'CM':{'popularity':[0.]*111, 'popularitydivisor':0},
-        'CD':{'popularity':[0.]*111, 'popularitydivisor':0}
+        'AP':{'popularity':[0.]*112, 'popularitydivisor':0},
+        'RD':{'popularity':[0.]*112, 'popularitydivisor':0},
+        'CM':{'popularity':[0.]*112, 'popularitydivisor':0},
+        'CD':{'popularity':[0.]*112, 'popularitydivisor':0}
     },
     'unranked':{
         'synergy':[], 'advantage':[], 'synergydivisor':[], 'advantagedivisor':[],
-        'AP':{'popularity':[0.]*111, 'popularitydivisor':0},
-        'RD':{'popularity':[0.]*111, 'popularitydivisor':0},
-        'CM':{'popularity':[0.]*111, 'popularitydivisor':0},
-        'CD':{'popularity':[0.]*111, 'popularitydivisor':0}
+        'AP':{'popularity':[0.]*112, 'popularitydivisor':0},
+        'RD':{'popularity':[0.]*112, 'popularitydivisor':0},
+        'CM':{'popularity':[0.]*112, 'popularitydivisor':0},
+        'CD':{'popularity':[0.]*112, 'popularitydivisor':0}
     }
 }
 
@@ -30,11 +30,11 @@ try:
     data=pickle.load(open("data.p","rb"))
 except:
     for lobbyType in ['ranked','unranked']:
-        for j in range(110):
-            data[lobbyType]['synergy'].append([1.]*111)
-            data[lobbyType]['advantage'].append([1.]*111)
-            data[lobbyType]['synergydivisor'].append([2]*111)
-            data[lobbyType]['advantagedivisor'].append([2]*111)
+        for j in range(112):
+            data[lobbyType]['synergy'].append([1.]*112)
+            data[lobbyType]['advantage'].append([1.]*112)
+            data[lobbyType]['synergydivisor'].append([2]*112)
+            data[lobbyType]['advantagedivisor'].append([2]*112)
 
 #api_key = raw_input("Enter API key: ")
 api_key = open('apikey.txt').read().strip()
@@ -135,7 +135,7 @@ while not stop:
     #except:
     #    print "Error while reading: "+str(sys.exc_info()[0])
     #    data=backup
-    #time.sleep(max(0,1 + start_get_time - time.clock()))
+    time.sleep(max(0,1 + start_get_time - time.clock()))
     stop=msvcrt.kbhit()
 
 pickle.dump(data,open("data.p","wb"))

@@ -29,16 +29,15 @@ heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","E
         "Meepo","Treant Protector","Ogre Magi","Undying","Rubick","Disruptor","Nyx Assassin","Naga Siren",
         "Keeper of the Light","Io","Visage","Slark","Medusa","Troll Warlord","Centaur Warrunner","Magnus","Timbersaw",
         "Bristleback","Tusk","Skywrath Mage","Abaddon","Elder Titan","Legion Commander","Techies","Ember Spirit",
-        "Earth Spirit","Abyssal Underlord","Terrorblade","Phoenix","Oracle"]
+        "Earth Spirit","Abyssal Underlord","Terrorblade","Phoenix","Oracle","Winter Wyvern"]
 
 hero_range=range(len(heroes))
 hero_range.remove(heroes.index("???"))
 hero_range.remove(heroes.index("Abyssal Underlord"))
+hero_range.remove(heroes.index("Winter Wyvern"))
 
 cmhero_range=list(hero_range)
 cmhero_range.remove(heroes.index("Earth Spirit"))
-cmhero_range.remove(heroes.index("Techies"))
-cmhero_range.remove(heroes.index("Bloodseeker"))
 cmhero_range.remove(heroes.index("Phantom Lancer"))
 
 # The hero name guesser uses these to determine which hero a player has typed in
@@ -151,7 +150,8 @@ abbreviations={
 'tb':109,'terrorblade':109,'terror':109,
 'phoenix':110,
 'techies':105,'goblin':105,'tech':105,
-'oracle':111,'ora':111}
+'oracle':111,'ora':111,
+'winter wyvern':112,'winter':112,'wyvern':112,'wyv':112,'ww':112}
 
 # The arrangement of hero icons in Captains Draft / Random Draft
 hero_group_table=[[6, 17, 18, 22, 37, 48, 50, 56, 58, 72, 77, 82, 90, 95, 97, 98, 99, 102, 103, 106, 109],
