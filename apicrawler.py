@@ -9,7 +9,7 @@ import copy
 alpha = 5000. # number of games measured for a probability variable before it starts to "replace" old data
 
 data={
-    'next_seq': 1000000000, #6.83 update
+    'next_seq': 1107000000, #6.83c update
     'ranked':{
         'synergy':[], 'advantage':[], 'synergydivisor':[], 'advantagedivisor':[],
         'AP':{'popularity':[0.]*112, 'popularitydivisor':0},

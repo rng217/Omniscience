@@ -34,11 +34,9 @@ heroes=["Anti-Mage","Axe","Bane","Bloodseeker","Crystal Maiden","Drow Ranger","E
 hero_range=range(len(heroes))
 hero_range.remove(heroes.index("???"))
 hero_range.remove(heroes.index("Abyssal Underlord"))
-hero_range.remove(heroes.index("Winter Wyvern"))
 
 cmhero_range=list(hero_range)
 cmhero_range.remove(heroes.index("Earth Spirit"))
-cmhero_range.remove(heroes.index("Phantom Lancer"))
 
 # The hero name guesser uses these to determine which hero a player has typed in
 abbreviations={
@@ -159,7 +157,7 @@ hero_group_table=[[6, 17, 18, 22, 37, 48, 50, 56, 58, 72, 77, 82, 90, 95, 97, 98
                  [0, 5, 7, 8, 9, 11, 19, 31, 34, 45, 47, 61, 69, 71, 79, 88, 94, 105],
                  [3, 10, 14, 39, 40, 43, 46, 55, 60, 62, 66, 81, 87, 92, 93, 108],
                  [4, 12, 16, 20, 21, 24, 26, 33, 52, 57, 63, 65, 74, 83, 85, 86, 89, 100, 110, 104],
-                 [2, 30, 25, 29, 32, 35, 36, 38, 42, 44, 49, 51, 54, 64, 67, 73, 75, 78, 91]]
+                 [2, 30, 25, 29, 32, 35, 36, 38, 42, 44, 49, 51, 54, 64, 67, 73, 75, 78, 91, 111]]
 
 hero_group_pixel_offsets_RD = {
     9: [(183,235),(183,469),(710,235),(710,469),(1242,235),(1242,469)], # 16:9
