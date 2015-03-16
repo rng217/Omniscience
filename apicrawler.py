@@ -6,23 +6,24 @@ import msvcrt
 import sys
 import copy
 
+nHeroes = 112
 alpha = 5000. # number of games measured for a probability variable before it starts to "replace" old data
 
 data={
-    'next_seq': 1107000000, #6.83c update
+    'next_seq': 1160000000, #6.83c update, end of year beast
     'ranked':{
         'synergy':[], 'advantage':[], 'synergydivisor':[], 'advantagedivisor':[],
-        'AP':{'popularity':[0.]*112, 'popularitydivisor':0},
-        'RD':{'popularity':[0.]*112, 'popularitydivisor':0},
-        'CM':{'popularity':[0.]*112, 'popularitydivisor':0},
-        'CD':{'popularity':[0.]*112, 'popularitydivisor':0}
+        'AP':{'popularity':[0.]*nHeroes, 'popularitydivisor':0},
+        'RD':{'popularity':[0.]*nHeroes, 'popularitydivisor':0},
+        'CM':{'popularity':[0.]*nHeroes, 'popularitydivisor':0},
+        'CD':{'popularity':[0.]*nHeroes, 'popularitydivisor':0}
     },
     'unranked':{
         'synergy':[], 'advantage':[], 'synergydivisor':[], 'advantagedivisor':[],
-        'AP':{'popularity':[0.]*112, 'popularitydivisor':0},
-        'RD':{'popularity':[0.]*112, 'popularitydivisor':0},
-        'CM':{'popularity':[0.]*112, 'popularitydivisor':0},
-        'CD':{'popularity':[0.]*112, 'popularitydivisor':0}
+        'AP':{'popularity':[0.]*nHeroes, 'popularitydivisor':0},
+        'RD':{'popularity':[0.]*nHeroes, 'popularitydivisor':0},
+        'CM':{'popularity':[0.]*nHeroes, 'popularitydivisor':0},
+        'CD':{'popularity':[0.]*nHeroes, 'popularitydivisor':0}
     }
 }
 
@@ -30,11 +31,27 @@ try:
     data=pickle.load(open("data.p","rb"))
 except:
     for lobbyType in ['ranked','unranked']:
-        for j in range(112):
-            data[lobbyType]['synergy'].append([1.]*112)
-            data[lobbyType]['advantage'].append([1.]*112)
-            data[lobbyType]['synergydivisor'].append([2]*112)
-            data[lobbyType]['advantagedivisor'].append([2]*112)
+        for j in range(nHeroes):
+            data[lobbyType]['synergy'].append([1.]*nHeroes)
+            data[lobbyType]['advantage'].append([1.]*nHeroes)
+            data[lobbyType]['synergydivisor'].append([2]*nHeroes)
+            data[lobbyType]['advantagedivisor'].append([2]*nHeroes)
+
+#normalize data if alpha is lowered
+for lobbyType in ['ranked','unranked']:
+    for i in range(nHeroes):
+        for  j in range(nHeroes):
+            if data[lobbyType]['synergydivisor'][i][j]>alpha:
+                data[lobbyType]['synergy'][i][j] = alpha * data[lobbyType]['synergy'][i][j] / data[lobbyType]['synergydivisor'][i][j]
+                data[lobbyType]['synergydivisor'][i][j] = alpha
+            if data[lobbyType]['advantagedivisor'][i][j]>alpha:
+                data[lobbyType]['advantage'][i][j] = alpha * data[lobbyType]['advantage'][i][j] / data[lobbyType]['advantagedivisor'][i][j]
+                data[lobbyType]['advantagedivisor'][i][j] = alpha
+    for mode in ['AP','RD','CM','CD']:
+        if data[lobbyType][mode]['popularitydivisor'] > alpha:
+            for i in range(nHeroes):
+                data[lobbyType][mode]['popularity'][i] = alpha * data[lobbyType][mode]['popularity'][i] / data[lobbyType][mode]['popularitydivisor']
+            data[lobbyType][mode]['popularitydivisor'] = alpha
 
 #api_key = raw_input("Enter API key: ")
 api_key = open('apikey.txt').read().strip()
@@ -48,7 +65,7 @@ last_match_start_time=9999999999
 radiant=range(5)
 dire=range(5,10)
 while not stop:
-    if last_match_start_time < time.time()-21600:
+    if last_match_start_time < time.time()-86400:
         data['next_seq']+=50000
     start_get_time=time.clock()
     while not stop:
@@ -99,7 +116,7 @@ while not stop:
                 if data[lobbyType][mode]['popularitydivisor']<alpha:
                     data[lobbyType][mode]['popularitydivisor']+=1
                 else:
-                    for i in range(110):
+                    for i in range(nHeroes):
                         data[lobbyType][mode]['popularity'][i]*=1-1/alpha
                 for i in range(10):
                     data[lobbyType][mode]['popularity'][hero_ids[i]]+=1

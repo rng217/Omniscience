@@ -37,6 +37,8 @@ hero_range.remove(heroes.index("Abyssal Underlord"))
 
 cmhero_range=list(hero_range)
 cmhero_range.remove(heroes.index("Earth Spirit"))
+cmhero_range.remove(heroes.index("Winter Wyvern"))
+cmhero_range.remove(heroes.index("Oracle"))
 
 # The hero name guesser uses these to determine which hero a player has typed in
 abbreviations={
